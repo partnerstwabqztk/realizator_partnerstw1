@@ -93,8 +93,11 @@ const channels = {
 };
 
 // KLIENT GOTOWY
-client.once('ready', () => {
+client.once('ready', async () => {
   console.log(`✅ Zalogowano jako ${client.user.tag}`);
+
+  // Opcjonalnie: sprawdzaj od razu dostępność wszystkich kanałów
+  await checkAllChannels();
 
   // Zimowe
   setInterval(() => sendAd(channels.zimowe.gaming), 11 * 60 * 1000);
@@ -140,24 +143,61 @@ client.once('ready', () => {
 
 // FUNKCJE
 async function sendAd(channelId) {
-  const channel = client.channels.cache.get(channelId);
-  if (channel) await channel.send(serverAd);
+  try {
+    let channel = client.channels.cache.get(channelId);
+
+    if (!channel) {
+      console.log(`🔎 Kanał ${channelId} nie w cache, próba fetch...`);
+      channel = await client.channels.fetch(channelId).catch(() => null);
+    }
+
+    if (!channel) {
+      console.error(`❌ Nie znaleziono kanału ${channelId}`);
+      return;
+    }
+
+    await channel.send(serverAd);
+    console.log(`✅ Wysłano reklamę na kanał ${channel.name}`);
+  } catch (error) {
+    console.error(`❌ Błąd przy wysyłaniu reklamy na ${channelId}:`, error);
+  }
 }
 
 async function sendPartnerInvitation(channelId) {
   try {
     let channel = client.channels.cache.get(channelId);
+
     if (!channel) {
+      console.log(`🔎 Kanał ${channelId} nie w cache, próba fetch...`);
       channel = await client.channels.fetch(channelId).catch(() => null);
     }
-    if (channel) {
-      await channel.send('# Posiadasz serwer i szukasz partnerstw? Wbijaj PV!');
-      console.log(`✅ Wysłano partnerstwo na kanał ${channelId}`);
-    } else {
+
+    if (!channel) {
       console.error(`❌ Nie znaleziono kanału ${channelId}`);
+      return;
     }
+
+    await channel.send('# Posiadasz serwer i szukasz partnerstw? Wbijaj PV!');
+    console.log(`✅ Wysłano partnerstwo na kanał ${channel.name}`);
   } catch (error) {
-    console.error(`❌ Błąd przy wysyłaniu partnerstwa na kanał ${channelId}:`, error);
+    console.error(`❌ Błąd przy wysyłaniu partnerstwa na ${channelId}:`, error);
+  }
+}
+
+// Funkcja sprawdzająca wszystkie kanały
+async function checkAllChannels() {
+  console.log('🔎 Sprawdzanie kanałów...');
+  const allChannelIds = Object.values(channels.zimowe).concat(Object.values(channels.miasto), Object.values(channels.hyper));
+
+  for (const id of allChannelIds) {
+    try {
+      let channel = client.channels.cache.get(id) || await client.channels.fetch(id);
+      if (channel) {
+        console.log(`✅ Kanał OK: ${channel.name}`);
+      }
+    } catch (err) {
+      console.error(`❌ Problem z kanałem ${id}:`, err.message);
+    }
   }
 }
 
@@ -192,7 +232,7 @@ client.on('messageCreate', async (message) => {
       if (!channel) return message.channel.send("❕ Nie znaleziono kanału na partnerstwa X-West.");
 
       await channel.send(`${userAd}\n\nPartnerstwo z: ${message.author.tag}`);
-      await message.channel.send("✅ Dziękujemy za partnerstwo! W razie pytań: @saioshi (saioshi)");
+      await message.channel.send("✅ Dziękujemy za partnerstwo!");
 
       partnershipTimestamps.set(message.author.id, now);
       partneringUsers.delete(message.author.id);
