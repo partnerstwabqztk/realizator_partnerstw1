@@ -48,6 +48,19 @@ https://media.discordapp.net/attachments/1327529385611493447/1340104080818962443
 const partnerGuildID = '1328172859222134844';
 const partnerChannelID = '1328182722937753692';
 
+ // Wysyłanie wiadomości co 6 minut
+  const channelId_partnerstwa = '1346609247869337701';
+  const serverId = '1348273862365941780';
+  setInterval(async () => {
+    const channel = client.channels.cache.get(channelId_partnerstwa);
+    if (channel) {
+      await channel.send('# Masz serwer i szukasz partnerstw? Wbijaj PV!');
+    } else {
+      console.error(`Nie znaleziono kanału o ID ${channelId_partnerstwa}`);
+    }
+  }, 6 * 60 * 1000); // 6 minut w milisekundach
+
+
 const channels = {
   zimowe: {
     gaming: '1346609270933946490',
