@@ -48,19 +48,6 @@ https://media.discordapp.net/attachments/1327529385611493447/1340104080818962443
 const partnerGuildID = '1328172859222134844';
 const partnerChannelID = '1328182722937753692';
 
- // Wysyłanie wiadomości co 6 minut
-  const channelId_partnerstwa = '1346609247869337701';
-  const serverId = '1348273862365941780';
-  setInterval(async () => {
-    const channel = client.channels.cache.get(channelId_partnerstwa);
-    if (channel) {
-      await channel.send('# Masz serwer i szukasz partnerstw? Wbijaj PV!');
-    } else {
-      console.error(`Nie znaleziono kanału o ID ${channelId_partnerstwa}`);
-    }
-  }, 6 * 60 * 1000); // 6 minut w milisekundach
-
-
 const channels = {
   zimowe: {
     gaming: '1346609270933946490',
@@ -86,7 +73,7 @@ const channels = {
     miasto1h: '1254163875620982834',
     miasto30m: '1254164476757020692',
     miasto15m: '1254165150978539520',
-    partnerstwa: '1332399570872832151' // <-- dodane partnerstwa dla miasta
+    partnerstwa: '1332399570872832151'
   },
   hyper: {
     hyper101: '1286351421691793461',
@@ -133,7 +120,7 @@ client.once('ready', () => {
   setInterval(() => sendAd(channels.miasto.miasto1h), 1 * 60 * 60 * 1000);
   setInterval(() => sendAd(channels.miasto.miasto30m), 30 * 60 * 1000);
   setInterval(() => sendAd(channels.miasto.miasto15m), 15 * 60 * 1000);
-  setInterval(() => sendPartnerInvitation(channels.miasto.partnerstwa), 1 * 60 * 60 * 1000); // NOWE!
+  setInterval(() => sendPartnerInvitation(channels.miasto.partnerstwa), 1 * 60 * 60 * 1000);
 
   // Hyper
   setInterval(() => sendAd(channels.hyper.hyper101), 1 * 60 * 60 * 1000);
@@ -158,8 +145,20 @@ async function sendAd(channelId) {
 }
 
 async function sendPartnerInvitation(channelId) {
-  const channel = client.channels.cache.get(channelId);
-  if (channel) await channel.send('# Posiadasz serwer i szukasz partnerstw? Wbijaj PV!');
+  try {
+    let channel = client.channels.cache.get(channelId);
+    if (!channel) {
+      channel = await client.channels.fetch(channelId).catch(() => null);
+    }
+    if (channel) {
+      await channel.send('# Posiadasz serwer i szukasz partnerstw? Wbijaj PV!');
+      console.log(`✅ Wysłano partnerstwo na kanał ${channelId}`);
+    } else {
+      console.error(`❌ Nie znaleziono kanału ${channelId}`);
+    }
+  } catch (error) {
+    console.error(`❌ Błąd przy wysyłaniu partnerstwa na kanał ${channelId}:`, error);
+  }
 }
 
 // DM - obsługa partnerstw
@@ -207,4 +206,3 @@ process.on('unhandledRejection', (error) => console.error('Nieobsłużony błąd
 
 // LOGOWANIE
 client.login(process.env.DISCORD_TOKEN);
-
