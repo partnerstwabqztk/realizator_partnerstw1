@@ -1,5 +1,5 @@
 const { Client, Intents } = require('discord.js-selfbot-v13');
-require('dotenv').config();
+const express = require('express');
 const app = express();
 const PORT = 8080;
 
