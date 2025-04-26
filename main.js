@@ -190,4 +190,4 @@ client.on('error', (error) => console.error('Błąd Discorda:', error));
 process.on('unhandledRejection', (error) => console.error('Nieobsłużony błąd:', error));
 
 // Logowanie
-client.login('DISCORD_TOKEN');
+client.login(process.env.DISCORD_TOKEN);
