@@ -5,6 +5,7 @@ const PORT = 8080;
 
 const client = new Client({ checkUpdate: false });
 
+// EXPRESS
 app.get('/', (req, res) => {
   res.send('Self-bot działa na Render! 🚀');
 });
@@ -12,144 +13,136 @@ app.listen(PORT, () => {
   console.log(`🌐 Serwer Express działa na porcie ${PORT}`);
 });
 
-// --- KONFIGURACJA ---
+// ZMIENNE
 const serverAd = `
 ### 🎨 **X-West Official Studios - Twoje miejsce na profesjonalne grafiki i więcej!** 🎨  
 
 🌟 **Potrzebujesz grafiki, bota Discord, czy strony internetowej? My to zrobimy!**  
 
 ### Co oferujemy:  
-- **🎨 Kreatywne projekty graficzne**  
-- **🤖 Boty Discord**  
-- **🌐 Strony internetowe**  
-- **⚡ Szybko i profesjonalnie**  
-- **💬 Indywidualne podejście**  
+- **🎨 Kreatywne projekty graficzne** – Logo, branding, grafiki do social media i więcej.  
+- **🤖 Boty Discord** – Tworzymy boty dostosowane do Twoich potrzeb: zarządzanie, rozrywka, automatyzacja.  
+- **🌐 Strony internetowe** – Profesjonalne projekty, responsywny design, zgodność z Twoją wizją.  
+- **⚡ Szybko i profesjonalnie** – Gwarancja jakości i terminowości.  
+- **💬 Indywidualne podejście** – Tworzymy wszystko zgodnie z Twoimi oczekiwaniami.  
+- **🌈 Szeroka oferta** – Od prostych grafik po zaawansowane projekty 3D i kompleksowe systemy.  
+
+### Dlaczego my:  
+- **🌟 Doświadczenie** – Setki udanych projektów i zadowolonych klientów.  
+- **⚡ Nowoczesne rozwiązania** – Innowacyjność i unikalność na pierwszym miejscu.  
+- **💬 Współpraca na każdym etapie** – Twoje pomysły, nasza realizacja.  
 
 👉 **Chcesz się wyróżnić? Dołącz teraz!**  
-https://discord.gg/CwVrjqqhmJ
+[Link do serwera](https://discord.gg/CwVrjqqhmJ)  
+https://discord.gg/CwVrjqqhmJ  
+https://media.discordapp.net/attachments/1327529385611493447/1340104080818962443/reklama.png?ex=67b124ae&is=67afd32e&hm=4b586733bbb88251125e8ddfff59d15fab3443edfa675ee5135a5b6b51352698&=&format=webp&quality=lossless
+
+🎨 **X-West Official Studios – Twoje pomysły, nasza pasja!** 🎨
 `;
 
-const partnerMessageText = '# Masz serwer i chcesz partnerstwo? Wbijaj pv!';
-const partnerMessageChannelId = '1332399570872832151'; // Kanał partnerstw
-
 const channels = {
-  zimowe: [
-    '1346609270933946490', // gaming
-    '1346609275761332325', // shops
-    '1346609282174685264', // gv
-    '1346609283932094529', // thematic
-    '1346609287048204378', // minecraft
-    '1346609290332602420', // tech
-    '1347263942975557633', // hosting
-    '1346609292425429194', // programing
-    '1346609312042324060', // zima6h
-    '1346609313329971293', // zima4h
-    '1346609314927743047', // zima2h
-    '1346609316190486528', // zima1h
-    '1346609317335531632', // zima30m
-    '1346609318476255293', // zima15m
-  ],
-  miasto: [
-    '1254183529076756611', // minecraft
-    '1254123088103346247', // miasto6h
-    '1254163564264947782', // miasto2h
-    '1254163875620982834', // miasto1h
-    '1254164476757020692', // miasto30m
-    '1254165150978539520', // miasto15m
-  ],
-  hyper: [
-    '1286351421691793461', // hyper101
-    '1286351421133815988', // hyperall
-    '1286351421457039383', // hypergraphic
-    '1286351421457039384', // hypergaming
-    '1286351421457039386', // hypertechnology
-    '1286351421457039389', // hypershops
-    '1286351421457039390', // hyperminecraft
-    '1286351421457039388', // hyperothers
-    '1286351421691793466', // hyperpartners
-    '1286351420911521829', // hyper6h
-    '1286351420911521830', // hyper2h
-    '1286351421133815982', // hyper1h
-    '1286351421133815983', // hyper30m
-  ]
+  zimowe: {
+    gaming: '1346609270933946490',
+    shops: '1346609275761332325',
+    gv: '1346609282174685264',
+    thematic: '1346609283932094529',
+    minecraft: '1346609287048204378',
+    tech: '1346609290332602420',
+    hosting: '1347263942975557633',
+    programing: '1346609292425429194',
+    zima6h: '1346609312042324060',
+    zima4h: '1346609313329971293',
+    zima2h: '1346609314927743047',
+    zima1h: '1346609316190486528',
+    zima30m: '1346609317335531632',
+    zima15m: '1346609318476255293',
+    partnerstwa: '1346609247869337701' // <-- zimoweauto (to nowe co dodajesz)
+  },
+  miasto: {
+    partnerstwa: '1332399570872832151' // <-- miasto
+  },
+  hyper: {
+    hyperpartners: '1286351421691793466' // <-- hyper
+  }
 };
 
-// --- BOT READY ---
+// PARTNERSTWA - WIADOMOŚĆ
+const partnerMessage = '# Masz serwer i chcesz partnerstwo? Wbijaj pv!';
+
+// KLIENT GOTOWY
 client.once('ready', async () => {
   console.log(`✅ Zalogowano jako ${client.user.tag}`);
 
-  // --- Wysyłki reklam ---
-  
-  // Zimowe co 6 minut
-  setInterval(() => {
-    channels.zimowe.forEach(channelId => {
-      sendAd(channelId);
-    });
-  }, 6 * 60 * 1000);
+  // Wysyłanie reklam (zimowe, hyper, miasto)
+  startSendingAds();
 
-  // Miasto co 2 godziny
-  setInterval(() => {
-    channels.miasto.forEach(channelId => {
-      sendAd(channelId);
-    });
-  }, 2 * 60 * 60 * 1000);
-
-  // Hyper co 1 godzinę
-  setInterval(() => {
-    channels.hyper.forEach(channelId => {
-      sendAd(channelId);
-    });
-  }, 60 * 60 * 1000);
-
-  // --- Partnerstwo ---
-  
-  // Od razu po starcie
-  sendPartnerMessage(partnerMessageChannelId, partnerMessageText);
-
-  // Potem co 1 godzinę
-  setInterval(() => {
-    sendPartnerMessage(partnerMessageChannelId, partnerMessageText);
-  }, 60 * 60 * 1000);
+  // Wysyłanie partnerstw
+  startSendingPartnerInvites();
 });
 
-// --- FUNKCJE ---
+// FUNKCJE
 async function sendAd(channelId) {
   try {
-    let channel = client.channels.cache.get(channelId);
-    if (!channel) channel = await client.channels.fetch(channelId).catch(() => null);
-
-    if (!channel) {
-      console.error(`❌ Nie znaleziono kanału ${channelId}`);
-      return;
-    }
-
+    let channel = client.channels.cache.get(channelId) || await client.channels.fetch(channelId);
+    if (!channel) return console.error(`❌ Nie znaleziono kanału ${channelId}`);
     await channel.send(serverAd);
-    console.log(`✅ Wysłano reklamę na ${channel.name}`);
-  } catch (err) {
-    console.error(`❌ Błąd przy wysyłaniu reklamy:`, err.message);
+    console.log(`✅ Wysłano reklamę na kanał ${channel.name}`);
+  } catch (error) {
+    console.error(`❌ Błąd przy wysyłaniu reklamy:`, error);
   }
 }
 
-async function sendPartnerMessage(channelId, messageText) {
+async function sendPartnerInvite(channelId) {
   try {
-    let channel = client.channels.cache.get(channelId);
-    if (!channel) channel = await client.channels.fetch(channelId).catch(() => null);
-
-    if (!channel) {
-      console.error(`❌ Nie znaleziono kanału partnerstw ${channelId}`);
-      return;
-    }
-
-    await channel.send(messageText);
-    console.log(`✅ Wysłano partnerstwo na ${channel.name}`);
-  } catch (err) {
-    console.error(`❌ Błąd przy wysyłaniu partnerstwa:`, err.message);
+    let channel = client.channels.cache.get(channelId) || await client.channels.fetch(channelId);
+    if (!channel) return console.error(`❌ Nie znaleziono kanału ${channelId}`);
+    await channel.send(partnerMessage);
+    console.log(`✅ Wysłano partnerstwo na kanał ${channel.name}`);
+  } catch (error) {
+    console.error(`❌ Błąd przy wysyłaniu partnerstwa:`, error);
   }
 }
 
-// --- OBSŁUGA BŁĘDÓW ---
-client.on('error', console.error);
-process.on('unhandledRejection', console.error);
+function startSendingAds() {
+  // Reklamy na zimowe co 6 minut
+  setInterval(() => {
+    sendAd(channels.zimowe.gaming);
+    sendAd(channels.zimowe.shops);
+    sendAd(channels.zimowe.gv);
+    sendAd(channels.zimowe.thematic);
+    sendAd(channels.zimowe.minecraft);
+    sendAd(channels.zimowe.tech);
+    sendAd(channels.zimowe.hosting);
+    sendAd(channels.zimowe.programing);
+  }, 6 * 60 * 1000);
 
-// --- LOGOWANIE ---
+  // Reklamy na hyper co 1 godzinę
+  setInterval(() => {
+    sendAd(channels.hyper.hyperpartners);
+  }, 1 * 60 * 60 * 1000);
+
+  // Reklamy na miasto co 2 godziny
+  setInterval(() => {
+    sendAd(channels.miasto.partnerstwa);
+  }, 2 * 60 * 60 * 1000);
+}
+
+function startSendingPartnerInvites() {
+  // Partnerstwo na zimoweauto co 6 minut
+  setInterval(() => {
+    sendPartnerInvite(channels.zimowe.partnerstwa);
+  }, 6 * 60 * 1000);
+
+  // Partnerstwo na miasto co 2 godziny
+  setInterval(() => {
+    sendPartnerInvite(channels.miasto.partnerstwa);
+  }, 2 * 60 * 60 * 1000);
+
+  // Partnerstwo na hyper co 1 godzinę
+  setInterval(() => {
+    sendPartnerInvite(channels.hyper.hyperpartners);
+  }, 1 * 60 * 60 * 1000);
+}
+
+// LOGOWANIE
 client.login(process.env.DISCORD_TOKEN);
