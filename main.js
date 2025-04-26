@@ -6,40 +6,16 @@ const PORT = 8080;
 const client = new Client({
   checkUpdate: false,
 });
-client.once('ready', () => {
-  console.log(`Zalogowano jako ${client.user.tag}`);
 
-  // zimowe - co 6 minut (6 * 60 * 1000 ms)
-  setInterval(() => {
-    sendMessage('1346609247869337701');
-  }, 6 * 60 * 1000);
-
-  // miasto - co 2 godziny (2 * 60 * 60 * 1000 ms)
-  setInterval(() => {
-    sendMessage('1332399570872832151');
-  }, 2 * 60 * 60 * 1000);
-
-  // hyperads - co 1 godzinę (1 * 60 * 60 * 1000 ms)
-  setInterval(() => {
-    sendMessage('1286351421691793466');
-  }, 1 * 60 * 60 * 1000);
+// EXPRESS
+app.get('/', (req, res) => {
+  res.send('Self-bot działa na Render! 🚀');
+});
+app.listen(PORT, () => {
+  console.log(`🌐 Serwer Express działa na porcie ${PORT}`);
 });
 
-// Funkcja do wysyłania wiadomości na kanał
-async function sendMessage(channelId) {
-  const channel = client.channels.cache.get(channelId);
-  if (channel && channel.isTextBased()) {
-    try {
-      await channel.send('# Posiadasz serwer i szukasz partnerstw? Wbijaj PV!');
-      console.log(`Wysłano wiadomość na kanał ${channelId}`);
-    } catch (error) {
-      console.error(`Błąd podczas wysyłania na kanał ${channelId}:`, error);
-    }
-  } else {
-    console.error(`Nie znaleziono kanału lub kanał nie jest tekstowy: ${channelId}`);
-  }
-}
-
+// ZMIENNE
 const partneringUsers = new Map();
 const partnershipTimestamps = new Map();
 
@@ -96,7 +72,8 @@ const channels = {
     miasto2h: '1254163564264947782',
     miasto1h: '1254163875620982834',
     miasto30m: '1254164476757020692',
-    miasto15m: '1254165150978539520'
+    miasto15m: '1254165150978539520',
+    partnerstwa: '1332399570872832151' // <-- dodane partnerstwa dla miasta
   },
   hyper: {
     hyper101: '1286351421691793461',
@@ -115,14 +92,7 @@ const channels = {
   }
 };
 
-app.get('/', (req, res) => {
-  res.send('Self-bot działa na Render! 🚀');
-});
-
-app.listen(PORT, () => {
-  console.log(`🌐 Serwer Express działa na porcie ${PORT}`);
-});
-
+// KLIENT GOTOWY
 client.once('ready', () => {
   console.log(`✅ Zalogowano jako ${client.user.tag}`);
 
@@ -150,6 +120,7 @@ client.once('ready', () => {
   setInterval(() => sendAd(channels.miasto.miasto1h), 1 * 60 * 60 * 1000);
   setInterval(() => sendAd(channels.miasto.miasto30m), 30 * 60 * 1000);
   setInterval(() => sendAd(channels.miasto.miasto15m), 15 * 60 * 1000);
+  setInterval(() => sendPartnerInvitation(channels.miasto.partnerstwa), 1 * 60 * 60 * 1000); // NOWE!
 
   // Hyper
   setInterval(() => sendAd(channels.hyper.hyper101), 1 * 60 * 60 * 1000);
@@ -167,19 +138,18 @@ client.once('ready', () => {
   setInterval(() => sendAd(channels.hyper.hyper30m), 30 * 60 * 1000);
 });
 
-// Funkcja wysyłania reklamy
+// FUNKCJE
 async function sendAd(channelId) {
   const channel = client.channels.cache.get(channelId);
   if (channel) await channel.send(serverAd);
 }
 
-// Funkcja wysyłania wiadomości PV
 async function sendPartnerInvitation(channelId) {
   const channel = client.channels.cache.get(channelId);
   if (channel) await channel.send('# Posiadasz serwer i szukasz partnerstw? Wbijaj PV!');
 }
 
-// Obsługa DM i partnerstw
+// DM - obsługa partnerstw
 client.on('messageCreate', async (message) => {
   if (!message.guild && !message.author.bot && message.author.id !== client.user.id) {
     const now = Date.now();
@@ -218,9 +188,10 @@ client.on('messageCreate', async (message) => {
   }
 });
 
-// Błędy
+// Obsługa błędów
 client.on('error', (error) => console.error('Błąd Discorda:', error));
 process.on('unhandledRejection', (error) => console.error('Nieobsłużony błąd:', error));
 
-// Logowanie
+// LOGOWANIE
 client.login(process.env.DISCORD_TOKEN);
+
