@@ -19,31 +19,7 @@ app.listen(PORT, () => {
 const partneringUsers = new Map();
 const partnershipTimestamps = new Map();
 
-const serverAd = `
-### 🎨 **X-West Official Studios - Twoje miejsce na profesjonalne grafiki i więcej!** 🎨  
-
-🌟 **Potrzebujesz grafiki, bota Discord, czy strony internetowej? My to zrobimy!**  
-
-### Co oferujemy:  
-- **🎨 Kreatywne projekty graficzne** – Logo, branding, grafiki do social media i więcej.  
-- **🤖 Boty Discord** – Tworzymy boty dostosowane do Twoich potrzeb: zarządzanie, rozrywka, automatyzacja.  
-- **🌐 Strony internetowe** – Profesjonalne projekty, responsywny design, zgodność z Twoją wizją.  
-- **⚡ Szybko i profesjonalnie** – Gwarancja jakości i terminowości.  
-- **💬 Indywidualne podejście** – Tworzymy wszystko zgodnie z Twoimi oczekiwaniami.  
-- **🌈 Szeroka oferta** – Od prostych grafik po zaawansowane projekty 3D i kompleksowe systemy.  
-
-### Dlaczego my:  
-- **🌟 Doświadczenie** – Setki udanych projektów i zadowolonych klientów.  
-- **⚡ Nowoczesne rozwiązania** – Innowacyjność i unikalność na pierwszym miejscu.  
-- **💬 Współpraca na każdym etapie** – Twoje pomysły, nasza realizacja.  
-
-👉 **Chcesz się wyróżnić? Dołącz teraz!**  
-[Link do serwera](https://discord.gg/CwVrjqqhmJ)  
-https://discord.gg/CwVrjqqhmJ  
-https://media.discordapp.net/attachments/1327529385611493447/1340104080818962443/reklama.png?ex=67b124ae&is=67afd32e&hm=4b586733bbb88251125e8ddfff59d15fab3443edfa675ee5135a5b6b51352698&=&format=webp&quality=lossless
-
-🎨 **X-West Official Studios – Twoje pomysły, nasza pasja!** 🎨
-`;
+const serverAd = `Twoja reklama serwera tutaj`; // <-- tutaj twój tekst reklamowy
 
 const partnerGuildID = '1328172859222134844';
 const partnerChannelID = '1328182722937753692';
@@ -96,10 +72,7 @@ const channels = {
 client.once('ready', async () => {
   console.log(`✅ Zalogowano jako ${client.user.tag}`);
 
-  // Opcjonalnie: sprawdzaj od razu dostępność wszystkich kanałów
-  await checkAllChannels();
-
-  // Zimowe
+  // Reklamy
   setInterval(() => sendAd(channels.zimowe.gaming), 11 * 60 * 1000);
   setInterval(() => sendAd(channels.zimowe.shops), 11 * 60 * 1000);
   setInterval(() => sendAd(channels.zimowe.gv), 11 * 60 * 1000);
@@ -114,18 +87,14 @@ client.once('ready', async () => {
   setInterval(() => sendAd(channels.zimowe.zima1h), 1 * 60 * 60 * 1000);
   setInterval(() => sendAd(channels.zimowe.zima30m), 30 * 60 * 1000);
   setInterval(() => sendAd(channels.zimowe.zima15m), 15 * 60 * 1000);
-  setInterval(() => sendPartnerInvitation(channels.zimowe.partnerstwa), 1 * 60 * 60 * 1000);
 
-  // Miasto
   setInterval(() => sendAd(channels.miasto.minecraft), 1 * 60 * 60 * 1000);
   setInterval(() => sendAd(channels.miasto.miasto6h), 6 * 60 * 60 * 1000);
   setInterval(() => sendAd(channels.miasto.miasto2h), 2 * 60 * 60 * 1000);
   setInterval(() => sendAd(channels.miasto.miasto1h), 1 * 60 * 60 * 1000);
   setInterval(() => sendAd(channels.miasto.miasto30m), 30 * 60 * 1000);
   setInterval(() => sendAd(channels.miasto.miasto15m), 15 * 60 * 1000);
-  setInterval(() => sendPartnerInvitation(channels.miasto.partnerstwa), 1 * 60 * 60 * 1000);
 
-  // Hyper
   setInterval(() => sendAd(channels.hyper.hyper101), 1 * 60 * 60 * 1000);
   setInterval(() => sendAd(channels.hyper.hyperall), 1 * 60 * 60 * 1000);
   setInterval(() => sendAd(channels.hyper.hypergraphic), 1 * 60 * 60 * 1000);
@@ -134,115 +103,39 @@ client.once('ready', async () => {
   setInterval(() => sendAd(channels.hyper.hypershops), 1 * 60 * 60 * 1000);
   setInterval(() => sendAd(channels.hyper.hyperminecraft), 1 * 60 * 60 * 1000);
   setInterval(() => sendAd(channels.hyper.hyperothers), 1 * 60 * 60 * 1000);
-  setInterval(() => sendPartnerInvitation(channels.hyper.hyperpartners), 1 * 60 * 60 * 1000);
   setInterval(() => sendAd(channels.hyper.hyper6h), 6 * 60 * 60 * 1000);
   setInterval(() => sendAd(channels.hyper.hyper2h), 2 * 60 * 60 * 1000);
   setInterval(() => sendAd(channels.hyper.hyper1h), 1 * 60 * 60 * 1000);
   setInterval(() => sendAd(channels.hyper.hyper30m), 30 * 60 * 1000);
+
+  // Partnerstwa
+  setInterval(() => sendPartnerInvitation(channels.zimowe.partnerstwa), 6 * 60 * 1000); // 6 minut
+  setInterval(() => sendPartnerInvitation(channels.miasto.partnerstwa), 2 * 60 * 60 * 1000); // 2 godziny
+  setInterval(() => sendPartnerInvitation(channels.hyper.hyperpartners), 1 * 60 * 60 * 1000); // 1 godzina
 });
 
 // FUNKCJE
 async function sendAd(channelId) {
   try {
-    let channel = client.channels.cache.get(channelId);
-
-    if (!channel) {
-      console.log(`🔎 Kanał ${channelId} nie w cache, próba fetch...`);
-      channel = await client.channels.fetch(channelId).catch(() => null);
-    }
-
-    if (!channel) {
-      console.error(`❌ Nie znaleziono kanału ${channelId}`);
-      return;
-    }
-
+    let channel = client.channels.cache.get(channelId) || await client.channels.fetch(channelId);
+    if (!channel) return console.error(`❌ Nie znaleziono kanału ${channelId}`);
     await channel.send(serverAd);
     console.log(`✅ Wysłano reklamę na kanał ${channel.name}`);
   } catch (error) {
-    console.error(`❌ Błąd przy wysyłaniu reklamy na ${channelId}:`, error);
+    console.error(`❌ Błąd wysyłki reklamy:`, error);
   }
 }
 
 async function sendPartnerInvitation(channelId) {
   try {
-    let channel = client.channels.cache.get(channelId);
-
-    if (!channel) {
-      console.log(`🔎 Kanał ${channelId} nie w cache, próba fetch...`);
-      channel = await client.channels.fetch(channelId).catch(() => null);
-    }
-
-    if (!channel) {
-      console.error(`❌ Nie znaleziono kanału ${channelId}`);
-      return;
-    }
-
+    let channel = client.channels.cache.get(channelId) || await client.channels.fetch(channelId);
+    if (!channel) return console.error(`❌ Nie znaleziono kanału ${channelId}`);
     await channel.send('# Posiadasz serwer i szukasz partnerstw? Wbijaj PV!');
-    console.log(`✅ Wysłano partnerstwo na kanał ${channel.name}`);
+    console.log(`✅ Wysłano wiadomość o partnerstwie na kanał ${channel.name}`);
   } catch (error) {
-    console.error(`❌ Błąd przy wysyłaniu partnerstwa na ${channelId}:`, error);
+    console.error(`❌ Błąd wysyłki partnerstwa:`, error);
   }
 }
-
-// Funkcja sprawdzająca wszystkie kanały
-async function checkAllChannels() {
-  console.log('🔎 Sprawdzanie kanałów...');
-  const allChannelIds = Object.values(channels.zimowe).concat(Object.values(channels.miasto), Object.values(channels.hyper));
-
-  for (const id of allChannelIds) {
-    try {
-      let channel = client.channels.cache.get(id) || await client.channels.fetch(id);
-      if (channel) {
-        console.log(`✅ Kanał OK: ${channel.name}`);
-      }
-    } catch (err) {
-      console.error(`❌ Problem z kanałem ${id}:`, err.message);
-    }
-  }
-}
-
-// DM - obsługa partnerstw
-client.on('messageCreate', async (message) => {
-  if (!message.guild && !message.author.bot && message.author.id !== client.user.id) {
-    const now = Date.now();
-    const last = partnershipTimestamps.get(message.author.id);
-
-    if (last && now - last < 7 * 24 * 60 * 60 * 1000) {
-      return message.channel.send("⏳ Musisz jeszcze poczekać, zanim będziesz mógł nawiązać kolejne partnerstwo.");
-    }
-
-    if (!partneringUsers.has(message.author.id)) {
-      partneringUsers.set(message.author.id, null);
-      return message.channel.send("🌎 Jeśli chcesz nawiązać partnerstwo, wyślij swoją reklamę (maks. 1 serwer).");
-    }
-
-    const userAd = partneringUsers.get(message.author.id);
-
-    if (userAd === null) {
-      partneringUsers.set(message.author.id, message.content);
-      await message.channel.send(`✅ Wstaw naszą reklamę:\n${serverAd}`);
-      return message.channel.send("⏰ Daj znać, gdy wstawisz reklamę!");
-    }
-
-    if (message.content.toLowerCase().includes('wstawi') || message.content.toLowerCase().includes('już') || message.content.toLowerCase().includes('gotowe') || message.content.toLowerCase().includes('juz')) {
-      const guild = client.guilds.cache.get(partnerGuildID);
-      if (!guild) return message.channel.send("❕ Nie znaleziono serwera X-West.");
-
-      const channel = guild.channels.cache.get(partnerChannelID);
-      if (!channel) return message.channel.send("❕ Nie znaleziono kanału na partnerstwa X-West.");
-
-      await channel.send(`${userAd}\n\nPartnerstwo z: ${message.author.tag}`);
-      await message.channel.send("✅ Dziękujemy za partnerstwo!");
-
-      partnershipTimestamps.set(message.author.id, now);
-      partneringUsers.delete(message.author.id);
-    }
-  }
-});
-
-// Obsługa błędów
-client.on('error', (error) => console.error('Błąd Discorda:', error));
-process.on('unhandledRejection', (error) => console.error('Nieobsłużony błąd:', error));
 
 // LOGOWANIE
 client.login(process.env.DISCORD_TOKEN);
