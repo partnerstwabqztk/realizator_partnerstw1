@@ -6,6 +6,39 @@ const PORT = 8080;
 const client = new Client({
   checkUpdate: false,
 });
+client.once('ready', () => {
+  console.log(`Zalogowano jako ${client.user.tag}`);
+
+  // zimowe - co 6 minut (6 * 60 * 1000 ms)
+  setInterval(() => {
+    sendMessage('1346609247869337701');
+  }, 6 * 60 * 1000);
+
+  // miasto - co 2 godziny (2 * 60 * 60 * 1000 ms)
+  setInterval(() => {
+    sendMessage('1332399570872832151');
+  }, 2 * 60 * 60 * 1000);
+
+  // hyperads - co 1 godzinę (1 * 60 * 60 * 1000 ms)
+  setInterval(() => {
+    sendMessage('1286351421691793466');
+  }, 1 * 60 * 60 * 1000);
+});
+
+// Funkcja do wysyłania wiadomości na kanał
+async function sendMessage(channelId) {
+  const channel = client.channels.cache.get(channelId);
+  if (channel && channel.isTextBased()) {
+    try {
+      await channel.send('# Posiadasz serwer i szukasz partnerstw? Wbijaj PV!');
+      console.log(`Wysłano wiadomość na kanał ${channelId}`);
+    } catch (error) {
+      console.error(`Błąd podczas wysyłania na kanał ${channelId}:`, error);
+    }
+  } else {
+    console.error(`Nie znaleziono kanału lub kanał nie jest tekstowy: ${channelId}`);
+  }
+}
 
 const partneringUsers = new Map();
 const partnershipTimestamps = new Map();
