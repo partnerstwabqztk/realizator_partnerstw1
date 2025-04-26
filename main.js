@@ -19,7 +19,31 @@ app.listen(PORT, () => {
 const partneringUsers = new Map();
 const partnershipTimestamps = new Map();
 
-const serverAd = `Twoja reklama serwera tutaj`; // <-- tutaj twój tekst reklamowy
+const serverAd = `
+### 🎨 **X-West Official Studios - Twoje miejsce na profesjonalne grafiki i więcej!** 🎨  
+
+🌟 **Potrzebujesz grafiki, bota Discord, czy strony internetowej? My to zrobimy!**  
+
+### Co oferujemy:  
+- **🎨 Kreatywne projekty graficzne** – Logo, branding, grafiki do social media i więcej.  
+- **🤖 Boty Discord** – Tworzymy boty dostosowane do Twoich potrzeb: zarządzanie, rozrywka, automatyzacja.  
+- **🌐 Strony internetowe** – Profesjonalne projekty, responsywny design, zgodność z Twoją wizją.  
+- **⚡ Szybko i profesjonalnie** – Gwarancja jakości i terminowości.  
+- **💬 Indywidualne podejście** – Tworzymy wszystko zgodnie z Twoimi oczekiwaniami.  
+- **🌈 Szeroka oferta** – Od prostych grafik po zaawansowane projekty 3D i kompleksowe systemy.  
+
+### Dlaczego my:  
+- **🌟 Doświadczenie** – Setki udanych projektów i zadowolonych klientów.  
+- **⚡ Nowoczesne rozwiązania** – Innowacyjność i unikalność na pierwszym miejscu.  
+- **💬 Współpraca na każdym etapie** – Twoje pomysły, nasza realizacja.  
+
+👉 **Chcesz się wyróżnić? Dołącz teraz!**  
+[Link do serwera](https://discord.gg/CwVrjqqhmJ)  
+https://discord.gg/CwVrjqqhmJ  
+https://media.discordapp.net/attachments/1327529385611493447/1340104080818962443/reklama.png?ex=67b124ae&is=67afd32e&hm=4b586733bbb88251125e8ddfff59d15fab3443edfa675ee5135a5b6b51352698&=&format=webp&quality=lossless
+
+🎨 **X-West Official Studios – Twoje pomysły, nasza pasja!** 🎨
+`;
 
 const partnerGuildID = '1328172859222134844';
 const partnerChannelID = '1328182722937753692';
@@ -72,29 +96,35 @@ const channels = {
 client.once('ready', async () => {
   console.log(`✅ Zalogowano jako ${client.user.tag}`);
 
-  // Reklamy
-  setInterval(() => sendAd(channels.zimowe.gaming), 11 * 60 * 1000);
-  setInterval(() => sendAd(channels.zimowe.shops), 11 * 60 * 1000);
-  setInterval(() => sendAd(channels.zimowe.gv), 11 * 60 * 1000);
-  setInterval(() => sendAd(channels.zimowe.thematic), 11 * 60 * 1000);
-  setInterval(() => sendAd(channels.zimowe.minecraft), 11 * 60 * 1000);
-  setInterval(() => sendAd(channels.zimowe.tech), 16 * 60 * 1000);
-  setInterval(() => sendAd(channels.zimowe.hosting), 16 * 60 * 1000);
-  setInterval(() => sendAd(channels.zimowe.programing), 11 * 60 * 1000);
+  await checkAllChannels();
+
+  // Zimowe
+  setInterval(() => sendAd(channels.zimowe.gaming), 6 * 60 * 1000);
+  setInterval(() => sendAd(channels.zimowe.shops), 6 * 60 * 1000);
+  setInterval(() => sendAd(channels.zimowe.gv), 6 * 60 * 1000);
+  setInterval(() => sendAd(channels.zimowe.thematic), 6 * 60 * 1000);
+  setInterval(() => sendAd(channels.zimowe.minecraft), 6 * 60 * 1000);
+  setInterval(() => sendAd(channels.zimowe.tech), 6 * 60 * 1000);
+  setInterval(() => sendAd(channels.zimowe.hosting), 6 * 60 * 1000);
+  setInterval(() => sendAd(channels.zimowe.programing), 6 * 60 * 1000);
   setInterval(() => sendAd(channels.zimowe.zima6h), 6 * 60 * 60 * 1000);
   setInterval(() => sendAd(channels.zimowe.zima4h), 4 * 60 * 60 * 1000);
   setInterval(() => sendAd(channels.zimowe.zima2h), 2 * 60 * 60 * 1000);
   setInterval(() => sendAd(channels.zimowe.zima1h), 1 * 60 * 60 * 1000);
   setInterval(() => sendAd(channels.zimowe.zima30m), 30 * 60 * 1000);
   setInterval(() => sendAd(channels.zimowe.zima15m), 15 * 60 * 1000);
+  setInterval(() => sendPartnerInvitation(channels.zimowe.partnerstwa), 6 * 60 * 1000);
 
-  setInterval(() => sendAd(channels.miasto.minecraft), 1 * 60 * 60 * 1000);
+  // Miasto
+  setInterval(() => sendAd(channels.miasto.minecraft), 2 * 60 * 60 * 1000);
   setInterval(() => sendAd(channels.miasto.miasto6h), 6 * 60 * 60 * 1000);
   setInterval(() => sendAd(channels.miasto.miasto2h), 2 * 60 * 60 * 1000);
   setInterval(() => sendAd(channels.miasto.miasto1h), 1 * 60 * 60 * 1000);
   setInterval(() => sendAd(channels.miasto.miasto30m), 30 * 60 * 1000);
   setInterval(() => sendAd(channels.miasto.miasto15m), 15 * 60 * 1000);
+  setInterval(() => sendPartnerInvitation(channels.miasto.partnerstwa), 2 * 60 * 60 * 1000);
 
+  // Hyper
   setInterval(() => sendAd(channels.hyper.hyper101), 1 * 60 * 60 * 1000);
   setInterval(() => sendAd(channels.hyper.hyperall), 1 * 60 * 60 * 1000);
   setInterval(() => sendAd(channels.hyper.hypergraphic), 1 * 60 * 60 * 1000);
@@ -103,15 +133,10 @@ client.once('ready', async () => {
   setInterval(() => sendAd(channels.hyper.hypershops), 1 * 60 * 60 * 1000);
   setInterval(() => sendAd(channels.hyper.hyperminecraft), 1 * 60 * 60 * 1000);
   setInterval(() => sendAd(channels.hyper.hyperothers), 1 * 60 * 60 * 1000);
-  setInterval(() => sendAd(channels.hyper.hyper6h), 6 * 60 * 60 * 1000);
-  setInterval(() => sendAd(channels.hyper.hyper2h), 2 * 60 * 60 * 1000);
-  setInterval(() => sendAd(channels.hyper.hyper1h), 1 * 60 * 60 * 1000);
-  setInterval(() => sendAd(channels.hyper.hyper30m), 30 * 60 * 1000);
+  setInterval(() => sendPartnerInvitation(channels.hyper.hyperpartners), 1 * 60 * 60 * 1000);
 
-  // Partnerstwa
-  setInterval(() => sendPartnerInvitation(channels.zimowe.partnerstwa), 6 * 60 * 1000); // 6 minut
-  setInterval(() => sendPartnerInvitation(channels.miasto.partnerstwa), 2 * 60 * 60 * 1000); // 2 godziny
-  setInterval(() => sendPartnerInvitation(channels.hyper.hyperpartners), 1 * 60 * 60 * 1000); // 1 godzina
+  // NOWY SERWER Z DODANĄ WIADOMOŚCIĄ
+  setInterval(() => sendCustomPartnerInvitation('1332399570872832151'), 2 * 60 * 60 * 1000);
 });
 
 // FUNKCJE
@@ -122,7 +147,7 @@ async function sendAd(channelId) {
     await channel.send(serverAd);
     console.log(`✅ Wysłano reklamę na kanał ${channel.name}`);
   } catch (error) {
-    console.error(`❌ Błąd wysyłki reklamy:`, error);
+    console.error(`❌ Błąd przy wysyłaniu reklamy na ${channelId}:`, error);
   }
 }
 
@@ -131,11 +156,42 @@ async function sendPartnerInvitation(channelId) {
     let channel = client.channels.cache.get(channelId) || await client.channels.fetch(channelId);
     if (!channel) return console.error(`❌ Nie znaleziono kanału ${channelId}`);
     await channel.send('# Posiadasz serwer i szukasz partnerstw? Wbijaj PV!');
-    console.log(`✅ Wysłano wiadomość o partnerstwie na kanał ${channel.name}`);
+    console.log(`✅ Wysłano partnerstwo na kanał ${channel.name}`);
   } catch (error) {
-    console.error(`❌ Błąd wysyłki partnerstwa:`, error);
+    console.error(`❌ Błąd przy wysyłaniu partnerstwa:`, error);
   }
 }
+
+async function sendCustomPartnerInvitation(channelId) {
+  try {
+    let channel = client.channels.cache.get(channelId) || await client.channels.fetch(channelId);
+    if (!channel) return console.error(`❌ Nie znaleziono kanału ${channelId}`);
+    await channel.send('# Masz serwer i chcesz partnerstwo? wbijaj pv!');
+    console.log(`✅ Wysłano custom partnerstwo na kanał ${channel.name}`);
+  } catch (error) {
+    console.error(`❌ Błąd wysyłki custom partnerstwa:`, error);
+  }
+}
+
+async function checkAllChannels() {
+  console.log('🔎 Sprawdzanie kanałów...');
+  const allChannelIds = Object.values(channels.zimowe).concat(Object.values(channels.miasto), Object.values(channels.hyper));
+
+  for (const id of allChannelIds) {
+    try {
+      let channel = client.channels.cache.get(id) || await client.channels.fetch(id);
+      if (channel) {
+        console.log(`✅ Kanał OK: ${channel.name}`);
+      }
+    } catch (err) {
+      console.error(`❌ Problem z kanałem ${id}:`, err.message);
+    }
+  }
+}
+
+// Obsługa błędów
+client.on('error', (error) => console.error('Błąd Discorda:', error));
+process.on('unhandledRejection', (error) => console.error('Nieobsłużony błąd:', error));
 
 // LOGOWANIE
 client.login(process.env.DISCORD_TOKEN);
